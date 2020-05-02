@@ -10,10 +10,24 @@ pub struct BoundedValue {
 }
 
 impl BoundedValue {
-    pub fn new(min: u16, max: u16, value: u16) -> Self {  // -> Result<BoundedValue, RangeError>
+    pub fn new(min: u16, max: u16, value: u16) -> Result<BoundedValue, RangeError> {
         // Assert min < max, throw relevant error message
-        // Assert value >= min and <= max, throw relevant error message
-        BoundedValue{ min, max, value }
+        if min > max {
+            return Err(RangeError{
+                message: "min cannot be larger than max".to_string()
+            })
+        }
+        if value > max {
+            return Err(RangeError{
+                message: "value cannot be larger than max".to_string()
+            })
+        }
+        if value < min {
+            return Err(RangeError{
+                message: "value cannot be less than min".to_string()
+            })
+        }
+        Ok(BoundedValue{ min, max, value })
     }
     
     pub fn increase(&mut self) -> Result<u16, RangeError> {
